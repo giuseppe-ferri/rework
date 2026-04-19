@@ -55,7 +55,7 @@ pip install flask flask-cors python-dotenv requests langchain langchain-groq lan
 4. Crie o arquivo `.env` na raiz do projeto:
 ```env
 GROQ_API_KEY=sua_chave_aqui
-BASE_URL=http://192.168.0.124:8080
+BASE_URL=http://192.168.0.132:8080
 ```
 
 ## Como usar
