@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Agente IA - RBX</title>
+  <style>
+    body { font-family: sans-serif; max-width: 750px; margin: 40px auto; padding: 0 20px; }
+    h1 { font-size: 20px; font-weight: 500; margin-bottom: 24px; }
+    #chat { border: 1px solid #ddd; border-radius: 10px; padding: 16px;
+            min-height: 320px; margin-bottom: 12px; overflow-y: auto; }
+    .msg-user { text-align: right; color: #185FA5; margin: 10px 0; font-size: 14px; }
+    .msg-bot  { text-align: left;  color: #333;    margin: 10px 0; font-size: 14px; line-height: 1.6; }
+    .msg-loading { color: #aaa; font-style: italic; font-size: 13px; }
+    textarea { width: 100%; padding: 10px; font-size: 14px;
+               border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; resize: vertical; }
+    button { margin-top: 8px; padding: 10px 22px; background: #185FA5;
+             color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; }
+    button:disabled { background: #aaa; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+  <h1>Agente IA - RBX</h1>
+  <div id="chat"></div>
+  <textarea id="input" rows="3" placeholder="Digite sua pergunta... ex: Quais clientes abriram mais chamados em abril?"></textarea>
+  <button id="send-btn" onclick="send()">Enviar</button>
+
+  <script>
+    async function send() {
+      const input = document.getElementById("input");
+      const btn   = document.getElementById("send-btn");
+      const question = input.value.trim();
+      if (!question) return;
+
+      addMsg("user", "Você: " + question);
+      input.value = "";
+      btn.disabled = true;
+
+      const loadingId = addMsg("loading", "Agente analisando...");
+
+      try {
+        const res = await fetch("http://localhost:5000/ask", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question })
+        });
+        const data = await res.json();
+        removeMsg(loadingId);
+        addMsg("bot", "Agente: " + data.answer);
+      } catch (err) {
+        removeMsg(loadingId);
+        addMsg("bot", "Erro: não foi possível conectar ao servidor.");
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    document.getElementById("input").addEventListener("keydown", function(e) {
+      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); }
+    });
+
+    function addMsg(type, text) {
+      const id  = "msg-" + Date.now();
+      const div = document.createElement("div");
+      div.id        = id;
+      div.className = type === "user" ? "msg-user" : type === "loading" ? "msg-loading" : "msg-bot";
+      div.textContent = text;
+      document.getElementById("chat").appendChild(div);
+      div.scrollIntoView({ behavior: "smooth" });
+      return id;
+    }
+
+    function removeMsg(id) {
+      const el = document.getElementById(id);
+      if (el) el.remove();
+    }
+  </script>
+</body>
+</html>
