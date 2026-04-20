@@ -32,8 +32,8 @@ Perguntas suportadas:
 
 1. Clone o repositório e entre na pasta:
 ```bash
-git clone https://github.com/seu-usuario/rbx-ai-agent.git
-cd rbx-ai-agent
+git clone https://github.com/giuseppe-ferri/rework.git
+cd rework
 ```
 
 2. Crie e ative o ambiente virtual:
@@ -49,7 +49,7 @@ source venv/bin/activate
 
 3. Instale as dependências:
 ```bash
-pip install flask flask-cors python-dotenv requests langchain langchain-groq langchain-community langgraph
+pip install -r requirements.txt
 ```
 
 4. Crie o arquivo `.env` na raiz do projeto:
