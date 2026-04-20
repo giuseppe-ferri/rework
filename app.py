@@ -21,7 +21,7 @@ CORS(app)
 
 # Inicializa o modelo via LangChain
 llm = ChatGroq(
-    model="llama-3.3-70b-versatile",
+    model="llama-3.1-8b-instant",  # limite de 131k tokens — muito mais generoso
     api_key=os.getenv("GROQ_API_KEY")
 )
 
